@@ -1,6 +1,7 @@
+# ./procore_spider.py
 import scrapy
 from crochet import setup
-setup() 
+setup()
 
 class ProcoreSpider(scrapy.Spider):
     name = "procore"
@@ -38,7 +39,7 @@ class ProcoreSpider(scrapy.Spider):
                 return
 
             business_name = business.css('h2[data-test-id="business-name"] span::text').get()
-            
+
             if not business_name or business_name in self.seen_business_names:
                 continue
 
@@ -51,10 +52,10 @@ class ProcoreSpider(scrapy.Spider):
             detail_page_link = business.css('a::attr(href)').get()
 
             if detail_page_link:
-                detail_page_link = response.urljoin(detail_page_link) 
+                detail_page_link = response.urljoin(detail_page_link)
                 yield scrapy.Request(
-                    detail_page_link, 
-                    callback=self.parse_business_detail, 
+                    detail_page_link,
+                    callback=self.parse_business_detail,
                     meta={
                         'business_name': business_name,
                         'location': location,
@@ -90,7 +91,7 @@ class ProcoreSpider(scrapy.Spider):
                 # Add a row with None values
                 empty_row = {key: None for key in row.keys()}
                 self.scraped_data.append(empty_row)
-            elif self.consecutive_empty_count > 8:
+            elif self.consecutive_empty_count > 18:
                 # Stop the spider
                 self.stop_requested = True
                 self.crawler.engine.close_spider(self, 'Encountered more than 8 consecutive empty rows.')
