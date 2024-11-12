@@ -5,7 +5,7 @@ from scrapy.crawler import CrawlerProcess
 
 class ProcoreSpider(scrapy.Spider):
     name = "procore"
-    base_url = "https://www.procore.com/network/us/mo?page="
+    base_url = "https://www.procore.com/network/us/ca?page="
     page_number = 1
 
     start_urls = [

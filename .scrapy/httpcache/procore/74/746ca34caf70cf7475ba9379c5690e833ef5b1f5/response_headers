@@ -1,0 +1,16 @@
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+Cf-Cache-Status: DYNAMIC
+Cf-Ray: 8e17e2b5eab54bfb-BOM
+Content-Encoding: gzip
+Content-Security-Policy: frame-ancestors *.procore.com https://app.contentful.com
+Content-Type: text/html; charset=utf-8
+Date: Tue, 12 Nov 2024 16:26:46 GMT
+Server: Vercel
+Set-Cookie: __cf_bm=NnQ1Zapp50UKGliga1UP_Q1liNljaVUluLvDJUsbmCk-1731428806-1.0.1.1-ThKrHTh1k3srRqg2xCmOIzj91JHIPnH0wpnMYFUtA_gpnK._glOSAzu3_wP5sDwaaJjf6rMueO38CzP05ffqCw; path=/; expires=Tue, 12-Nov-24 16:56:46 GMT; domain=.procore.com; HttpOnly; Secure; SameSite=None
+Set-Cookie: _cfuvid=AJOLLtmucjlkjkR8dPNAN_joCKHbFJw8cuRqpJKL20A-1731428806764-0.0.1.1-604800000; path=/; domain=.procore.com; HttpOnly; Secure; SameSite=None
+Strict-Transport-Security: max-age=63072000
+Vary: Origin, Accept-Encoding
+X-Content-Type-Options: nosniff
+X-Envoy-Upstream-Service-Time: 482
+X-Powered-By: Next.js
+X-Vercel-Id: bom1::ksz5g-1731428806029-18dab283851f
