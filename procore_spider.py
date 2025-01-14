@@ -74,7 +74,9 @@ class ProcoreSpider(scrapy.Spider):
         if self.stop_requested:
             return
 
-        phone_number = response.css('div.StyledBox-core-11_26_0__sc-fgsy0p-0.fWuYyi p.MuiTypography-body1::text').get()
+        # phone_number = response.css('div.StyledBox-core-11_26_0__sc-fgsy0p-0.fWuYyi p.MuiTypography-body1::text').get()
+        phone_number = response.css('div.StyledBox-core-12_15_0__sc-fgsy0p-0.ksFsez p.MuiTypography-body1::text').get()
+
         row = {
             "Business Name": response.meta['business_name'],
             "Phone Number": phone_number,
