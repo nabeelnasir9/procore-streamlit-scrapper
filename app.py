@@ -22,11 +22,19 @@ runner = CrawlerRunner({
     'LOG_ENABLED': True,
 })
 
-# Function to run the spider
-@run_in_reactor
-def crawl(state_code):
+# Function to run the spider in a background thread
+def run_spider_in_background(state_code):
+    """Run the spider in a separate thread"""
     ProcoreSpider.state_code = state_code.lower()
-    return runner.crawl(ProcoreSpider)
+    ProcoreSpider.stop_requested = False
+    ProcoreSpider.scraped_data = []
+    
+    # Run the spider using crochet's run_in_reactor
+    @run_in_reactor
+    def _crawl():
+        return runner.crawl(ProcoreSpider)
+    
+    _crawl()
 
 def main():
     st.title("Procore Business Data Scraper")
@@ -72,10 +80,13 @@ def main():
         st.info(f"🔄 Starting scraper for state: {state_code.upper()}...")
         st.write("⏳ Initializing scraper... This may take 10-30 seconds for first results.")
 
-        # Run the spider
+        # Run the spider in background
         try:
-            crawl(state_code)
-            st.session_state.crawl_thread = threading.current_thread()
+            spider_thread = threading.Thread(target=run_spider_in_background, args=(state_code,))
+            spider_thread.daemon = True
+            spider_thread.start()
+            st.session_state.crawl_thread = spider_thread
+            st.success("✅ Scraper thread started! Waiting for data...")
         except Exception as e:
             st.error(f"❌ Error starting scraper: {str(e)}")
             st.session_state.scraping = False
