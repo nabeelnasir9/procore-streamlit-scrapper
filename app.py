@@ -7,11 +7,19 @@ from procore_spider import ProcoreSpider
 import threading
 import time
 import io  # For handling Excel file in memory
+import os
 
+# Set the reactor before importing twisted
+os.environ['SCRAPY_SETTINGS_MODULE'] = 'settings'
 setup()
 
-# Initialize the crawler runner
-runner = CrawlerRunner()
+# Initialize the crawler runner with proper settings
+runner = CrawlerRunner({
+    'TWISTED_REACTOR': 'twisted.internet.selectreactor.SelectReactor',
+    'CONCURRENT_REQUESTS': 20,
+    'DOWNLOAD_DELAY': 0,
+    'LOG_LEVEL': 'INFO',
+})
 
 # Function to run the spider
 @run_in_reactor
