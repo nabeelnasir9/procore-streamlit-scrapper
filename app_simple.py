@@ -37,23 +37,22 @@ def main():
     with col2:
         stop_button = st.button("⏹️ Stop Scraping")
 
-    def run_scraper(scraper_instance):
+    def run_scraper():
         """Run scraper in background"""
-        scraper_instance.scrape(max_pages=200)  # Max 200 pages, stops at 10 consecutive blanks
+        scraper = SimpleProcoreScraper(state_code)
+        st.session_state.scraper = scraper
+        scraper.scrape(max_pages=3)
 
     if start_button and not st.session_state.scraping:
         st.session_state.scraping = True
         st.session_state.data = []
-        
-        # Create scraper instance BEFORE threading
-        st.session_state.scraper = SimpleProcoreScraper(state_code)
         
         st.info(f"🔄 Starting scraper for state: {state_code.upper()}...")
         st.write("⏳ This uses a simplified scraper that should work better in Streamlit Cloud...")
 
         # Run the scraper in background
         try:
-            spider_thread = threading.Thread(target=run_scraper, args=(st.session_state.scraper,))
+            spider_thread = threading.Thread(target=run_scraper)
             spider_thread.daemon = True
             spider_thread.start()
             st.success("✅ Scraper started! Waiting for data...")
