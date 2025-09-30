@@ -70,10 +70,15 @@ def main():
         ProcoreSpider.consecutive_empty_count = 0  # Reset the counter
         
         st.info(f"🔄 Starting scraper for state: {state_code.upper()}...")
+        st.write("⏳ Initializing scraper... This may take 10-30 seconds for first results.")
 
         # Run the spider
-        crawl(state_code)
-        st.session_state.crawl_thread = threading.current_thread()
+        try:
+            crawl(state_code)
+            st.session_state.crawl_thread = threading.current_thread()
+        except Exception as e:
+            st.error(f"❌ Error starting scraper: {str(e)}")
+            st.session_state.scraping = False
 
     if stop_button and st.session_state.scraping:
         st.session_state.stop_requested = True
@@ -87,8 +92,10 @@ def main():
         progress_text = st.empty()
         status_text = st.empty()
         scraped_count = 0
+        wait_cycles = 0
+        max_wait_cycles = 60  # 60 seconds timeout for first data
         
-        status_text.info("🔄 Scraping in progress... Please wait for data to appear.")
+        status_text.info("🔄 Scraping in progress... Please wait for data to appear (this may take up to 30 seconds).")
 
         while st.session_state.scraping:
             # Make a copy of the data to prevent concurrent modification issues
@@ -97,6 +104,7 @@ def main():
 
             if new_count > scraped_count:
                 scraped_count = new_count
+                wait_cycles = 0  # Reset wait counter when we get data
                 status_text.success(f"✅ Scraping... Found {scraped_count} businesses so far!")
 
                 # Ensure all items are dictionaries and have the same keys
@@ -116,6 +124,13 @@ def main():
                     df = pd.DataFrame.from_records(valid_data)
                     data_placeholder.dataframe(df, use_container_width=True)
                     progress_text.text(f"📊 Total items scraped: {scraped_count}")
+            else:
+                # No new data yet
+                wait_cycles += 1
+                if wait_cycles <= max_wait_cycles:
+                    status_text.info(f"🔄 Waiting for data... ({wait_cycles}s elapsed)")
+                else:
+                    status_text.warning("⚠️ No data received after 60 seconds. There may be a connection issue.")
 
             time.sleep(1)  # Sleep for a short time before updating
 
