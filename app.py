@@ -18,7 +18,8 @@ runner = CrawlerRunner({
     'TWISTED_REACTOR': 'twisted.internet.selectreactor.SelectReactor',
     'CONCURRENT_REQUESTS': 20,
     'DOWNLOAD_DELAY': 0,
-    'LOG_LEVEL': 'INFO',
+    'LOG_LEVEL': 'DEBUG',  # Changed to DEBUG to see more details
+    'LOG_ENABLED': True,
 })
 
 # Function to run the spider

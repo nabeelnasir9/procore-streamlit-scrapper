@@ -37,18 +37,23 @@ class ProcoreSpider(scrapy.Spider):
         if self.stop_requested:
             return
 
+        self.logger.info(f"Parsing page {self.page_number}, URL: {response.url}")
         business_divs = response.css("div.sc-eCstZk.MuiBox-root")
+        self.logger.info(f"Found {len(business_divs)} business divs")
 
         if not business_divs:
-            self.logger.info(f"No more businesses found on page {self.page_number}. Scraping finished.")
+            self.logger.warning(f"No more businesses found on page {self.page_number}. Scraping finished.")
             return
 
+        businesses_found = 0
         for business in business_divs:
             if self.stop_requested:
                 return
 
             # Look for business links within this div
             business_links = business.css('a[href*="/p/"]')
+            if business_links:
+                businesses_found += 1
             
             for link in business_links:
                 # Get business name from the link text or data attributes
@@ -135,6 +140,8 @@ class ProcoreSpider(scrapy.Spider):
                 
                 # Only process one business per div to avoid duplicates
                 break
+        
+        self.logger.info(f"Page {self.page_number} processing complete. Found {businesses_found} businesses with valid links")
 
         # Increment the page number and proceed to the next page
         self.page_number += 1
